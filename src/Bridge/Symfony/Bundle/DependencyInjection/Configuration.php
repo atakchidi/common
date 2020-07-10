@@ -17,6 +17,10 @@ final class Configuration implements ConfigurationInterface
         $rootNode = $treeBuilder->getRootNode();
         $rootNode
             ->children()
+                ->arrayNode('serialize_context')
+                ->end()
+                ->arrayNode('deserialize_context')
+                ->end()
                 ->append($this->listenersNode('listeners'))
             ->end()
         ;

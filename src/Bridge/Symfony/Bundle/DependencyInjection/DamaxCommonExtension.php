@@ -8,6 +8,8 @@ use Damax\Common\Bridge\Symfony\Bundle\Listener\DeserializeListener;
 use Damax\Common\Bridge\Symfony\Bundle\Listener\DomainEventListener;
 use Damax\Common\Bridge\Symfony\Bundle\Listener\PaginationListener;
 use Damax\Common\Bridge\Symfony\Bundle\Listener\SerializeListener;
+use Damax\Common\Bridge\Symfony\Serializer\DeserializeContext;
+use Damax\Common\Bridge\Symfony\Serializer\SerializeContext;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -38,6 +40,7 @@ final class DamaxCommonExtension extends ConfigurableExtension
             $loader->load('ramsey_uuid.xml');
         }
 
+        $this->configureSerializerContext($config, $container);
         $this->configureListeners($config['listeners'], $container);
     }
 
@@ -57,5 +60,11 @@ final class DamaxCommonExtension extends ConfigurableExtension
         }
 
         return $this;
+    }
+
+    private function configureSerializerContext(array $config, ContainerBuilder $container): void
+    {
+        $container->register(SerializeContext::class)->addArgument($config['serialize_context']);
+        $container->register(DeserializeContext::class)->addArgument($config['deserialize_context']);
     }
 }

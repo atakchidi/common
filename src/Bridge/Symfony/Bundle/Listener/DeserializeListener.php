@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace Damax\Common\Bridge\Symfony\Bundle\Listener;
 
 use Damax\Common\Bridge\Symfony\Bundle\Annotation\Deserialize;
+use Damax\Common\Bridge\Symfony\Serializer\DeserializeContext;
+use Damax\Common\Bridge\Symfony\Serializer\SerializeContext;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -23,11 +25,13 @@ class DeserializeListener implements EventSubscriberInterface
 
     private $serializer;
     private $validator;
+    private $context;
 
-    public function __construct(SerializerInterface $serializer, ValidatorInterface $validator)
+    public function __construct(SerializerInterface $serializer, ValidatorInterface $validator, DeserializeContext $context)
     {
         $this->serializer = $serializer;
         $this->validator = $validator;
+        $this->context = $context;
     }
 
     public static function getSubscribedEvents(): array
@@ -57,7 +61,7 @@ class DeserializeListener implements EventSubscriberInterface
         /** @var Deserialize $config */
         $config = $request->attributes->get('_deserialize');
 
-        $context = $config->groups() ? ['groups' => $config->groups()] : [];
+        $context = $this->context->merge(['groups' => $config->groups()]);
 
         // Deserialize body into object.
         try {

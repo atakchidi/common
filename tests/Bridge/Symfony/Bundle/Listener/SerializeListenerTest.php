@@ -6,6 +6,7 @@ namespace Damax\Common\Tests\Bridge\Symfony\Bundle\Listener;
 
 use Damax\Common\Bridge\Symfony\Bundle\Annotation\Serialize;
 use Damax\Common\Bridge\Symfony\Bundle\Listener\SerializeListener;
+use Damax\Common\Bridge\Symfony\Serializer\SerializeContext;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\EventDispatcher\EventDispatcher;
@@ -33,7 +34,7 @@ class SerializeListenerTest extends TestCase
     {
         $this->serializer = $this->createMock(SerializerInterface::class);
         $this->dispatcher = new EventDispatcher();
-        $this->dispatcher->addSubscriber(new SerializeListener($this->serializer));
+        $this->dispatcher->addSubscriber(new SerializeListener($this->serializer, new SerializeContext([])));
     }
 
     /**

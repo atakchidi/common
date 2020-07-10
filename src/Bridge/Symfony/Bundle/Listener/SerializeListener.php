@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Damax\Common\Bridge\Symfony\Bundle\Listener;
 
 use Damax\Common\Bridge\Symfony\Bundle\Annotation\Serialize;
+use Damax\Common\Bridge\Symfony\Serializer\SerializeContext;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,11 +21,14 @@ class SerializeListener implements EventSubscriberInterface
         'POST' => Response::HTTP_CREATED,
     ];
 
+    private $context;
+
     private $serializer;
 
-    public function __construct(SerializerInterface $serializer)
+    public function __construct(SerializerInterface $serializer, SerializeContext $context)
     {
         $this->serializer = $serializer;
+        $this->context = $context;
     }
 
     public static function getSubscribedEvents(): array
@@ -40,7 +44,7 @@ class SerializeListener implements EventSubscriberInterface
             return;
         }
 
-        $context = $config->groups() ? ['groups' => $config->groups()] : [];
+        $context = $this->context->merge(['groups' => $config->groups()]);
 
         $json = $this->serializer->serialize($event->getControllerResult(), self::CONTENT_TYPE, $context);
 

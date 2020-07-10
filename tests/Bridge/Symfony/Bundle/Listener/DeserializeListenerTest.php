@@ -6,6 +6,7 @@ namespace Damax\Common\Tests\Bridge\Symfony\Bundle\Listener;
 
 use Damax\Common\Bridge\Symfony\Bundle\Annotation\Deserialize;
 use Damax\Common\Bridge\Symfony\Bundle\Listener\DeserializeListener;
+use Damax\Common\Bridge\Symfony\Serializer\DeserializeContext;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use stdClass;
@@ -44,7 +45,7 @@ class DeserializeListenerTest extends TestCase
         $this->serializer = $this->createMock(SerializerInterface::class);
         $this->validator = $this->createMock(ValidatorInterface::class);
         $this->dispatcher = new EventDispatcher();
-        $this->dispatcher->addSubscriber(new DeserializeListener($this->serializer, $this->validator));
+        $this->dispatcher->addSubscriber(new DeserializeListener($this->serializer, $this->validator, new DeserializeContext([])));
     }
 
     /**

@@ -27,6 +27,8 @@ class ConfigurationTest extends TestCase
                 'pagination' => false,
                 'domain_events' => false,
             ],
+            'serialize_context' => [],
+            'deserialize_context' => [],
         ]);
     }
 
@@ -50,6 +52,34 @@ class ConfigurationTest extends TestCase
                 'deserialize' => true,
                 'pagination' => true,
                 'domain_events' => true,
+            ],
+            'serialize_context' => [],
+            'deserialize_context' => [],
+        ]);
+    }
+
+    /**
+     * @test
+     */
+    public function it_configures_serializer_contexts(): void
+    {
+        $config = [
+            'serialize_context' => [
+                'foo' => true,
+                'bar' => false,
+            ],
+            'deserialize_context' => [
+                'baz' => true,
+            ],
+        ];
+
+        $this->assertProcessedConfigurationEquals([$config], [
+            'serialize_context' => [
+                'foo' => true,
+                'bar' => false,
+            ],
+            'deserialize_context' => [
+                'baz' => true,
             ],
         ]);
     }
